@@ -1,0 +1,40 @@
+version: "3.8"
+
+services:
+
+  backend:
+    build: ./backend
+    container_name: corposant-backend
+    ports:
+      - "5000:5000"
+    depends_on:
+      - db
+    environment:
+      - DB_HOST=db
+      - DB_USER=postgres
+      - DB_PASSWORD=postgres
+      - DB_NAME=corposant
+    networks:
+      - corposant-network
+
+  db:
+    image: postgres:15
+    container_name: corposant_db
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: corposant
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    networks:
+      - corposant-network
+
+networks:
+  corposant-network:
+
+volumes:
+  postgres-data:  
+
