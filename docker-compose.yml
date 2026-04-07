@@ -2,11 +2,26 @@ version: "3.8"
 
 services:
 
+  nginx:
+    build: ./nginx
+    container_name: corposant-nginx
+    ports:
+      - "80:80"
+    depends_on:
+      - frontend
+      - backend
+    networks:
+      - corposant-network
+
+  frontend:
+    build: ./frontend
+    container_name: corposant-frontend
+    networks:
+      - corposant-network
+
   backend:
     build: ./backend
     container_name: corposant-backend
-    ports:
-      - "5000:5000"
     depends_on:
       - db
     environment:
@@ -27,8 +42,6 @@ services:
       POSTGRES_DB: corposant
     volumes:
       - postgres-data:/var/lib/postgresql/data
-    ports:
-      - "5432:5432"
     networks:
       - corposant-network
 
