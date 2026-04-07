@@ -1,4 +1,4 @@
-name: Deploy Corposant
+name: Deploy corposant
 
 on:
   push:
@@ -10,18 +10,18 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Deploy to Azure VM
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: SSH into VM and deploy
         uses: appleboy/ssh-action@v0.1.6
         with:
-          host: ${{ secrets.VM_IP }}
-          username: ${{ secrets.VM_USER }}
+          host: 4.156.36.217
+          username: fury
           key: ${{ secrets.SSH_KEY }}
           script: |
-            cd ~
-            if [ -d "corposant" ]; then
-              git clone https://github.com/randheeer/corposant.git
-            fi
-            cd corposant
-            git config --global -add safe.directory /home/fury/corposant
+            cd /home/fury/corposanr
+            git pull origin main
             docker-compose down
             docker-compose up -d --build
+

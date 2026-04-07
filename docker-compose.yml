@@ -7,6 +7,9 @@ services:
     container_name: corposant-nginx
     ports:
       - "80:80"
+      - "443:443"
+    volumes:
+      - /etc/letsencrypt:/etc/letsencrypt
     depends_on:
       - frontend
       - backend
@@ -44,10 +47,63 @@ services:
       - postgres-data:/var/lib/postgresql/data
     networks:
       - corposant-network
+    
+  prometheus:
+    image: prom/prometheus
+    container_name: corposant-prometheus
+    volumes:
+      - ./monitoring/prometheus.yml:/etc/prometheus/prometheus.yml
+    ports:
+      - "9090:9090"
+    networks:
+      - corposant-network
+
+  grafana:
+    image: grafana/grafana
+    container_name: corposant-grafana
+    ports:
+      - "3001:3000"
+    volumes:
+      - grafana_data:/var/lib/grafana
+    networks:
+      - corposant-network
+
+  node-exporter:
+    image: prom/node-exporter
+    container_name: corposant-node-exporter
+    ports: 
+      - "9100:9100"
+    networks:
+      - corposant-network
+
+  cadvisor:
+    image: gcr.io/cadvisor/cadvisor:latest
+    container_name: corposant-cadvisor
+    ports:
+      - "8080:8080"
+    volumes:
+      - /:/rootfs:ro
+      - /var/run:/var/run:ro
+      - /sys:/sys:ro
+      - /var/lib/docker/:/var/lib/docker:ro
+    networks:
+      - corposant-network
+
+  alertmanager:
+    image: prom/alertmanager
+    container_name: corposant-alertmanager
+    ports:
+      - "9093:9093"
+    volumes:
+      - ./monitoring/alertmanager.yml:/etc/alertmanager/alertmanager.yml
+    networks:
+      - corposant-network
+
 
 networks:
   corposant-network:
 
 volumes:
   postgres-data:  
+  grafana_data:
 
