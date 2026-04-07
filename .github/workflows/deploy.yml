@@ -17,7 +17,11 @@ jobs:
           username: ${{ secrets.VM_USER }}
           key: ${{ secrets.SSH_KEY }}
           script: |
+            cd ~
+            if [ -d "corposant" ]; then
+              git clone https://github.com/randheeer/corposant.git
+            fi
             cd corposant
-            git pull
+            git config --global -add safe.directory /home/fury/corposant
             docker-compose down
             docker-compose up -d --build
