@@ -19,6 +19,7 @@ jobs:
           host: 4.156.36.217
           username: fury
           key: ${{ secrets.SSH_KEY }}
+          port: 22
           script: |
             cd /home/fury/corposant
             git pull origin main
