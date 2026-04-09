@@ -20,7 +20,7 @@ jobs:
           username: fury
           key: ${{ secrets.SSH_KEY }}
           script: |
-            cd /home/fury/corposanr
+            cd /home/fury/corposant
             git pull origin main
             docker-compose down
             docker-compose up -d --build
