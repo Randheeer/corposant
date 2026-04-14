@@ -36,7 +36,7 @@ STATUS=$(docker inspect --format='{{.State.Health.Status}}' corposant-nginx)
 echo "Health status:$STATUS"
 
 if [ "$STATUS" != "healthy" ]; then
-  echo"Deployment Failed!!"
+  echo "Deployment Failed!!"
 
   rm -f $LOCK_FILE
 
