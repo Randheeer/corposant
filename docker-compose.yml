@@ -3,7 +3,7 @@ version: "3.8"
 services:
 
   nginx:
-    build: ./nginx
+    image: corposant_nginx:${VERSION}
     container_name: corposant-nginx
     ports:
       - "80:80"
@@ -16,14 +16,25 @@ services:
     networks:
       - corposant-network
 
+    healthcheck:
+      test: ["CMD", "wget","--spider", "-q", "--no-check-certificate", "http://127.0.0.1"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+
   frontend:
-    build: ./frontend
+    image: corposant_frontend:${VERSION}
     container_name: corposant-frontend
     networks:
       - corposant-network
 
+    healthcheck:
+      test: ["CMD", "wget","--spider", "-q", "http://localhost"]
+      interval: 10s
+      timeout: 5s
+
   backend:
-    build: ./backend
+    image: corposant_backend:${VERSION}
     container_name: corposant-backend
     depends_on:
       - db
@@ -34,6 +45,11 @@ services:
       - DB_NAME=corposant
     networks:
       - corposant-network
+
+    healthcheck:
+      test: ["CMD", "wget","--spider", "-q", "http://localhost:5000"]
+      interval: 10s
+      timeout: 5s
 
   db:
     image: postgres:15
